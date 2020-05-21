@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>true</action_insert>
+        <action_query>false</action_query>
+        <action_update>false</action_update>
+        <active>true</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>x_58872_needit_needit</collection>
+        <condition/>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition/>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>NeedIt When needed data do campo</name>
+        <order>100</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+//Jeito novo de se fazer, usando Script Include
+	// Instancia a classe NeedItUtils, chama o método IsDatePass e passa o valor u_when_needed
+	var niutils = new NeedItUtils();
+	var isPast = niutils.isDatePast(current.u_when_needed);
+	// Se o método isDatePast retornar true, a data estará no passado.
+	if(isPast == true){
+		gs.addErrorMessage("A data não pode estar no passado. Portanto, sua solicitação não foi salva no banco.");
+		current.setAbortAction(true);
+	}
+	
+	
+	//Verificar se a data é igual a de hoje - Metodo novo com Script Include
+	var isToday = niutils.isDateToday(current.u_when_needed);
+	// Se o método isDateToday retornar true, a data é de hoej
+	if(isToday == true){
+		gs.addErrorMessage("Você não pode fazer uma solicitação na data de hoje. Portanto, sua solicitação não foi salva no banco.");
+		current.setAbortAction(true);
+	}
+	
+/* //Jeito antigo de se fazer - Usando Bussiness Rules
+// rightnow armazena a hora atual
+	var rightnow = new GlideDateTime();
+	// Cria um objeto GlideDateTime para a data definida pelo whenNeeded
+	var whenNeeded = new GlideDateTime(current.u_when_needed);
+	
+	// Se a data do whenNeeded for anterior ao da rightnow, nao é gravado no banco de dados
+	// É exibido uma mensagem de erro na tela do usuário
+	if(whenNeeded.before(rightnow)){
+		gs.addErrorMessage("A data do When Needed não pode estar no passado. Por tanto, sua solicitação não foi salva no banco de dados.");
+		current.setAbortAction(true);
+	}
+
+		
+	
+	// É necessário um tempo para ser enviado a solicitação. Logo, não será permitido enviar solicitações com a data atual.
+	// Caso ocorra, é exibido uma mensagem de erro na tela do usuário
+	
+	// Para isso, é necessário deixar só a data. E tirar a hora
+	var today = rightnow.getLocalDate();
+	var istoday = whenNeeded.getLocalDate();
+	// Compare se today e istoday sao iguais, caso seja, mostre a mensagem de erro
+	if(today.compareTo(istoday) == 0){
+		gs.addErrorMessage("Você não pode fazer uma solicitação da mesma data do pedido");
+		current.setAbortAction(true);
+	}
+		*/
+})(current, previous);]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-05-20 17:16:22</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>7cbb4493dbfc10104eeca0f2ca9619bc</sys_id>
+        <sys_mod_count>11</sys_mod_count>
+        <sys_name>NeedIt When needed data do campo</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="NeedIt" source="x_58872_needit">6ead8e780f603200cd674f8ce1050ed1</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NeedIt">6ead8e780f603200cd674f8ce1050ed1</sys_scope>
+        <sys_update_name>sys_script_7cbb4493dbfc10104eeca0f2ca9619bc</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2020-05-21 20:02:56</sys_updated_on>
+        <template/>
+        <when>before</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=7cbb4493dbfc10104eeca0f2ca9619bc"/>
+</record_update>
