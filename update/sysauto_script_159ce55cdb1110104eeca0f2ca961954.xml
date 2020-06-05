@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sysauto_script">
+    <sysauto_script action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <business_calendar/>
+        <condition/>
+        <conditional>false</conditional>
+        <entered_time>1970-01-01 00:00:00</entered_time>
+        <name> Localizar e fechar tarefas NeedIt há muito tempo</name>
+        <run_as display_value="System Administrator">6816f79cc0a8016401c5a33be04be441</run_as>
+        <run_as_tz/>
+        <run_dayofmonth>1</run_dayofmonth>
+        <run_dayofweek>1</run_dayofweek>
+        <run_period/>
+        <run_start>2020-06-05 13:00:59</run_start>
+        <run_time>1970-01-01 08:05:00</run_time>
+        <run_type>daily</run_type>
+        <script><![CDATA[// Recupera o valor da propriedade do aplicativo x_58872_needit.autoCloseOverdue
+	var howLongToClose = gs.getProperty('x_58872_needit.autoCloseOverdue');
+
+// Consulta os registros da tarefa NeedIt no banco de dados com o valor do campo "Due date"
+// mais antigos do número de dias definido na propriedade do aplicativo
+// x_58872_needit.autoCloseOverdue.
+// Somente retorna os registros NeedIt Task que têm um valor State "Open" ou "Work in progress"
+// em andamento. Feche as tarefas NeedIt e atualize as notas do trabalho da tarefa NeedIt.
+
+var overdueNITasks = new GlideRecord('x_58872_needit_needit_task');
+	overdueNITasks.addQuery('due_date','<=',gs.daysAgo(howLongToClose));
+	overdueNITasks.addQuery('state','<',3);
+	overdueNITasks.query();
+
+// Escreva uma mensagem de log para cada registro de tarefa NeedIt muito atrasado.
+// Adicione uma nota ao campo Notas de trabalho. Altere o State para "Closed Incomplete".
+// Atualize o registro da tarefa NeedIt.
+while(overdueNITasks.next()){
+	gs.info("Fechar automaticamente o registro da tarefa NeedIt =" + overdueNITasks.number);
+	overdueNITasks.work_notes = "O registro foi fechado porque estava muito longe da data de vencimento.";
+		overdueNITasks.state = 4;
+		overdueNITasks.update();
+	
+	
+}]]></script>
+        <sys_class_name>sysauto_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-06-05 13:13:47</sys_created_on>
+        <sys_id>159ce55cdb1110104eeca0f2ca961954</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name> Localizar e fechar tarefas NeedIt há muito tempo</sys_name>
+        <sys_package display_value="NeedIt" source="x_58872_needit">6ead8e780f603200cd674f8ce1050ed1</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NeedIt">6ead8e780f603200cd674f8ce1050ed1</sys_scope>
+        <sys_update_name>sysauto_script_159ce55cdb1110104eeca0f2ca961954</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2020-06-05 13:15:49</sys_updated_on>
+        <time_zone/>
+        <upgrade_safe>false</upgrade_safe>
+    </sysauto_script>
+</record_update>
